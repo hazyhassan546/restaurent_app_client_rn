@@ -11,10 +11,10 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { getProducts } from '../../api/products/products';
-import { RootStackParamList } from '../../navigation/AppNavigator';
+import { AppStackParamList } from '../../navigation/AppNavigator';
 import { config } from '../../config/config';
 
-type NavProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
+type NavProp = NativeStackNavigationProp<AppStackParamList, 'Home'>;
 
 export default function HomeScreen() {
   const navigation = useNavigation<NavProp>();
