@@ -1,3 +1,4 @@
+import { getStoredAuthTokens } from '../../auth/storage';
 import { apiClient } from '../client';
 
 export type InitLoginPayload = {
@@ -27,6 +28,11 @@ export type otpVerifyPayload = {
   otp: string;
 };
 
+export type verifyTokenResponse = {
+  success: boolean;
+  message: string;
+};
+
 export const initLogin = async (payload: InitLoginPayload) => {
   const response = await apiClient.post<InitLoginResponse>(
     '/auth/init-login',
@@ -42,4 +48,27 @@ export const verifyOtp = async (payload: otpVerifyPayload) => {
     payload,
   );
   return response.data;
+};
+
+export const renewAuthToken = async () => {
+  const tokens = await getStoredAuthTokens();
+
+  const response = await apiClient.post<otpVerifyResponse>(
+    '/auth/refresh-token',
+    {},
+    {
+      headers: {
+        Authorization: 'Bearer ' + tokens.refreshToken,
+      },
+    },
+  );
+  return response.data;
+};
+
+export const verifyAuthToken = async () => {
+  const response = await apiClient.post<verifyTokenResponse>(
+    '/auth/verify-auth-token',
+  );
+
+  return response?.data;
 };

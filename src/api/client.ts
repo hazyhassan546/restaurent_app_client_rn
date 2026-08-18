@@ -1,5 +1,6 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { Platform } from 'react-native';
+import { getStoredAuthTokens } from '../auth/storage';
 
 const DEFAULT_TIMEOUT = 15000;
 
@@ -50,12 +51,19 @@ export const apiClient: AxiosInstance = axios.create({
   validateStatus: status => status >= 200 && status < 300,
 });
 
-apiClient.interceptors.request.use(config => {
-  config.headers = {
+apiClient.interceptors.request.use(async config => {
+  const tokens = await getStoredAuthTokens();
+
+  const headers = {
+    ...(tokens.authToken
+      ? { Authorization: `Bearer ${tokens.authToken}` }
+      : {}),
     ...(config.headers ?? {}),
     Accept: 'application/json',
     'Content-Type': 'application/json',
   } as typeof config.headers;
+
+  config.headers = headers;
 
   return config;
 });

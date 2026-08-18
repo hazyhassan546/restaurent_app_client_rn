@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { getStoredAuthTokens } from '../auth/storage';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import SignUpScreen from '../screens/Auth/SignupScreen';
 import OtpScreen from '../screens/Auth/OtpScreen';
@@ -47,7 +47,15 @@ function AppStackNavigator() {
 }
 
 export default function AppNavigator() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading || isAuthenticated === null) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <NavigationContainer>
@@ -69,3 +77,12 @@ export default function AppNavigator() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f7fb',
+  },
+});
