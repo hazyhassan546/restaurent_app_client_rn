@@ -1,10 +1,15 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import SignUpScreen from '../screens/Auth/SignupScreen';
 import OtpScreen from '../screens/Auth/OtpScreen';
+import AllProductsScreen from '../screens/AllProducts/AllProductsScreen';
+import FavouritesScreen from '../screens/Favourites/FavouritesScreen';
+import VouchersScreen from '../screens/Vouchers/VouchersScreen';
 import { useAuth } from '../providers/authContextProvider';
 
 export type AuthStackParamList = {
@@ -12,8 +17,11 @@ export type AuthStackParamList = {
   Otp: { name: string; phone: string };
 };
 
-export type AppStackParamList = {
-  Home: undefined;
+export type AppTabParamList = {
+  HomeTab: undefined;
+  AllProducts: undefined;
+  Favourites: undefined;
+  Vouchers: undefined;
 };
 
 export type RootStackParamList = {
@@ -23,7 +31,7 @@ export type RootStackParamList = {
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
-const AppStack = createNativeStackNavigator<AppStackParamList>();
+const Tab = createBottomTabNavigator<AppTabParamList>();
 
 function AuthStackNavigator() {
   return (
@@ -34,15 +42,60 @@ function AuthStackNavigator() {
   );
 }
 
-function AppStackNavigator() {
+function AppTabsNavigator() {
   return (
-    <AppStack.Navigator>
-      <AppStack.Screen
-        name="Home"
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: '#f97316',
+        tabBarInactiveTintColor: '#64748b',
+      }}
+    >
+      <Tab.Screen
+        name="HomeTab"
         component={HomeScreen}
-        options={{ title: 'Products' }}
+        options={{
+          title: 'Home',
+          tabBarLabel: 'Home',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" size={size} color={color} />
+          ),
+        }}
       />
-    </AppStack.Navigator>
+      <Tab.Screen
+        name="AllProducts"
+        component={AllProductsScreen}
+        options={{
+          title: 'All Products',
+          tabBarLabel: 'All Products',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="grid-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Favourites"
+        component={FavouritesScreen}
+        options={{
+          title: 'Favourites',
+          tabBarLabel: 'Favourites',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="heart-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Vouchers"
+        component={VouchersScreen}
+        options={{
+          title: 'Vouchers',
+          tabBarLabel: 'Vouchers',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="ticket-outline" size={size} color={color} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 }
 
@@ -71,7 +124,7 @@ export default function AppNavigator() {
         ) : null}
 
         {isAuthenticated ? (
-          <RootStack.Screen name="App" component={AppStackNavigator} />
+          <RootStack.Screen name="App" component={AppTabsNavigator} />
         ) : null}
       </RootStack.Navigator>
     </NavigationContainer>
